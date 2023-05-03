@@ -43,189 +43,184 @@ import { getAnswer } from '@/apis/chat'
 import { htmlTopdf } from '@/utils/tools'
 import SSE from '@/utils/sse'
 export default {
-  data() {
-    return {
-      currentQuestion: '',
-      questionsAnswers: [],
-      source: Object.freeze({})
-    };
-  },
-  mounted() {
-    const cahtGptData = window.sessionStorage.getItem('cahtGpt')
-    if (cahtGptData) {
-      this.questionsAnswers = JSON.parse(cahtGptData)
+    data() {
+        return {
+            currentQuestion: '',
+            questionsAnswers: [],
+            source: Object.freeze({})
+        };
+    },
+    mounted() {
+        const cahtGptData = window.sessionStorage.getItem('cahtGpt')
+        if (cahtGptData) {
+            this.questionsAnswers = JSON.parse(cahtGptData)
+        }
+        this.sseTimeout = setTimeout(() => {
+            this.source.close()
+        }, 1000 * 60 * 5)
+    },
+    methods: {
+        createSse(path) {
+            return new Promise((resolve, reject) => {
+                this.source = new SSE(path, {}, ({ event, error, status }) => {
+                if (error) {
+                    console.log(error)
+                    reject(error)
+                }
+                if(status === 'open') {
+                   resolve()
+                }
+                if (status === 'message' && event) {
+                    if (this.questionsAnswers.length > 0) this.questionsAnswers[this.questionsAnswers.length - 1].content += event.data
+                }
+            });
+            })
+            
+        },
+        handelMarked(text) {
+            return marked.parse(text)
+        },
+        async copyContent() {
+            let text = document.querySelector('.answer-content').innerText;
+            await this.$copyText(text)
+            this.$message.success('复制成功')
+        },
+        async clearStory() {
+            this.questionsAnswers = []
+            window.sessionStorage.clear()
+            this.$message.success('清理成功')
+        },
+        async sendQuestion() {
+            if (!this.currentQuestion) return
+            // if (this.source.status === 'close') {
+            //     this.source.init()
+            // }
+            if(this.source.status !== 'open'){
+                await this.createSse('http://localhost:3001/api/sse')
+            }
+            const currentQuestion = this.currentQuestion
+            this.questionsAnswers.push({ role: 'user', content: this.currentQuestion })
+            const questionsAnswers = JSON.parse(JSON.stringify(this.questionsAnswers))
+            this.questionsAnswers.push({ role: 'assistant', content: '' })
+            this.currentQuestion = ''
+            try {
+                await getAnswer({
+                    messages: questionsAnswers
+                })
+                window.sessionStorage.setItem('cahtGpt', JSON.stringify(this.questionsAnswers))
+            } catch (error) {
+                this.$message.error('请稍后重试')
+                this.questionsAnswers.splice(-2, 2)
+                this.currentQuestion = currentQuestion
+            }
+        },
+        convertToPdf() {
+            htmlTopdf('.content', {
+                filename: 'chatGPT.pdf'
+            })
+        },
+    },
+    destroyed() {
+        this.source.close()
+        this.source = null
+        clearTimeout(this.sseTimeout)
     }
-    // this.setTimeClose()
-  },
-  methods: {
-    handelMarked(text) {
-      return marked.parse(text)
-    },
-    async copyContent() {
-      let text = document.querySelector('.answer-content').innerText;
-      await this.$copyText(text)
-      this.$message.success('复制成功')
-    },
-    async clearStory() {
-      this.questionsAnswers = []
-      window.sessionStorage.clear()
-      this.$message.success('清理成功')
-    },
-    setTimeClose() {
-      this.sseTimeout = setTimeout(() => {
-        this.source.close()
-      }, 1000 * 60 * 5)
-    },
-    creatSSE() {
-      return new Promise((resolve, reject) => {
-        this.source = new SSE('/api/sse', {}, ({ event, error, status }) => {
-          // this.source = new SSE('http://localhost:3000/api/sse', {}, ({ event, error, status }) => {
-          if (status === 'open') {
-            resolve()
-          }
-          if (error) {
-            reject(error)
-            console.log(error)
-          }
-          if (status === 'message' && event) {
-            if (this.questionsAnswers.length > 0) this.questionsAnswers[this.questionsAnswers.length - 1].content += event.data
-          }
-        });
-      })
-
-    },
-    async sendQuestion() {
-      if (!this.currentQuestion) return
-      // if (this.source.status === 'close') {
-      //   this.source.init()
-      // }
-      // if (this.sseTimeout) clearTimeout(this.setTimeout)
-      await this.creatSSE()
-      const currentQuestion = this.currentQuestion
-      this.questionsAnswers.push({ role: 'user', content: this.currentQuestion })
-      const questionsAnswers = JSON.parse(JSON.stringify(this.questionsAnswers))
-      this.questionsAnswers.push({ role: 'assistant', content: '' })
-      this.currentQuestion = ''
-      try {
-        await getAnswer({
-          messages: questionsAnswers
-        })
-        this.source.close()
-        window.sessionStorage.setItem('cahtGpt', JSON.stringify(this.questionsAnswers))
-        // this.setTimeClose()
-      } catch (error) {
-        this.$message.error('请稍后重试')
-        this.questionsAnswers.splice(-2, 2)
-        this.currentQuestion = currentQuestion
-      }
-    },
-    convertToPdf() {
-      htmlTopdf('.content', {
-        filename: 'chatGPT.pdf'
-      })
-    },
-  },
-  destroyed() {
-    this.source.close()
-    this.source = null
-    clearTimeout(this.sseTimeout)
-  }
 }
 </script>
 <style>
 .chat-wrap {
-  height: 100%;
-  display: flex;
-  flex-direction: column;
-  box-sizing: border-box;
-  border-radius: 10px;
-  padding: 0 10px;
-  background-color: #444654;
+    height: 100%;
+    display: flex;
+    flex-direction: column;
+    box-sizing: border-box;
+    border-radius: 10px;
+    padding: 0 10px;
+    background-color: #444654;
 }
 
 .content {
-  flex: 1;
-  overflow-y: auto;
-  background-color: #444654;
+    flex: 1;
+    overflow-y: auto;
+    background-color: #444654;
 }
 
 .footer {
-  display: flex;
-  align-items: center;
-  /* height: 60px; */
-  margin: 10px;
-  background-color: #fff;
-  border-radius: 10px;
+    display: flex;
+    align-items: center;
+    /* height: 60px; */
+    margin: 10px;
+    background-color: #fff;
+    border-radius: 10px;
 }
 
 .question {
-  display: flex;
-  width: 100%;
-  background-color: #343541;
-  color: #fff;
-  padding: 10px;
-  box-sizing: border-box;
-  border-radius: 5px;
+    display: flex;
+    width: 100%;
+    background-color: #343541;
+    color: #fff;
+    padding: 10px;
+    box-sizing: border-box;
+    border-radius: 5px;
 }
 
 .answer {
-  display: flex;
-  width: 100%;
-  background-color: #444654;
-  color: #fff;
+    display: flex;
+    width: 100%;
+    background-color: #444654;
+    color: #fff;
 }
 
 .answer pre {
-  /* display: flex; */
-  /* justify-content: center; */
+    /* display: flex; */
+    /* justify-content: center; */
 }
 
 .answer pre code {
-  /* width: 800px; */
+    /* width: 800px; */
 }
 
 .ml-20 {
-  margin-left: 8px;
+    margin-left: 8px;
 }
 
 .mt-17 {
-  margin-top: 17px;
+    margin-top: 17px;
 }
 
 .ml-7 {
-  margin-left: 7px;
+    margin-left: 7px;
 }
 
 .ml-4 {
-  margin-left: 4px;
+    margin-left: 4px;
 }
 
 .ofx-auto {
-  overflow-x: auto;
+    overflow-x: auto;
 }
 
 .jc-sb {
-  justify-content: space-between;
+    justify-content: space-between;
 }
 
 .ti-center {
-  text-align: center;
+    text-align: center;
 }
 
 .c-pointer {
-  cursor: pointer;
+    cursor: pointer;
 }
 
 .flex {
-  display: flex;
+    display: flex;
 }
 
 .ai-center {
-  align-items: center;
+    align-items: center;
 }
 
 .jc-center {
-  justify-content: center;
+    justify-content: center;
 }
 </style>
 

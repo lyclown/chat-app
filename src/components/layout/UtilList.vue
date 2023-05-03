@@ -12,7 +12,8 @@ export default {
         return{
             utils:[
                 {title:'ChatGPT',icon:'el-icon-s-comment',path:'/chat'},
-                {title:'生成图片',icon:'el-icon-picture',path:'/image'}            
+                {title:'生成图片',icon:'el-icon-picture',path:'/image'},
+                {title:'语音对话',icon:'el-icon-picture',path:'/video'}             
             ]
         }
     },

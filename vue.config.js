@@ -8,7 +8,7 @@ module.exports = defineConfig({
     port: 8081, // 前端项目编译后使用的端口号，跟webpack配置的port同理
     proxy: {
       '/api': {
-        target: "http://10.0.7.210:3000",   // 实际跨域请求的API地址
+        target: "http://localhost:3001",   // 实际跨域请求的API地址
         secure: false,   // https请求则使用true
         ws:true,
         changeOrigin: true,  // 跨域

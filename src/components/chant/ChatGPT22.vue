@@ -87,7 +87,7 @@ export default {
             })
             const currentQuestion = this.currentQuestion
             this.currentQuestion = ''
-            const { data } = await axios.post("http://localhost:3000/api/getAnswer", { prompt: currentQuestion })
+            const { data } = await axios.post("http://localhost:3001/api/getAnswer", { prompt: currentQuestion })
             console.log(data)
             if (data.success) {
                 this.$toast('完成')

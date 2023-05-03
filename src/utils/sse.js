@@ -10,7 +10,7 @@ class SSE {
         this.maxRetryCount = 3
         this.init()
     }
-  init = () => {
+    init = () => {
         this.eventSource = new EventSource(this.url, this.option)
         this.addEventListeners();
     }
@@ -20,14 +20,14 @@ class SSE {
         this.eventSource.addEventListener('open', this.onOpen)
         this.eventSource.addEventListener('close', this.onClose)
     }
-  onError = (e) => {
+    onError = (e) => {
         // 浏览器刷新会触发erroror事件,所以需要判断一下
         if(e  && e.target && e.target.readyState === 2) {
             this.onRetry();
         }
        
     }
-  onMessage = (e) => {
+    onMessage = (e) => {
         if(this.eventSource.readyState === 2) {
             this.status = 'close'
             return
@@ -35,7 +35,7 @@ class SSE {
         this.status = 'message'
         this.callback({ event: e, error: null, status: this.status })
     }
-  onClose = (e) => {
+    onClose = (e) => {
         this.status = 'close'
         this.callback({ event: e, error: null, status: this.status })
     }
@@ -44,6 +44,7 @@ class SSE {
         this.callback({ event: e, error: null, status: this.status })
     }
     onRetry = () => {
+        console.log(666666)
         this.close();
         this.retryCount++;
         if (this.retryCount <= this.maxRetryCount) {
@@ -58,10 +59,11 @@ class SSE {
             this.callback({ event: null, error, status: this.status })
         }
     }
-  close = () => {
+    close = () => {
         this.eventSource.close()
         this.removeEventListeners()
         this.eventSource = null
+        this.status = 'init'
     }
     removeEventListeners = () => {
         this.eventSource.removeEventListener('message', this.onMessage())

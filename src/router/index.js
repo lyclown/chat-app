@@ -19,6 +19,11 @@ const routes = [
         path: '/image',
         name: 'image',
         component: ()=>import('@/views/chat/ChatImage.vue'),
+      },
+      {
+        path: '/video',
+        name: 'video',
+        component: ()=>import('@/views/chat/ChatVideo.vue'),
       }
     ]
 

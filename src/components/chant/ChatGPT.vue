@@ -50,7 +50,7 @@ export default {
         if (cahtGptData) {
             this.questionsAnswers = JSON.parse(cahtGptData)
         }
-        const source = new EventSource('http://localhost:3000/api/sse');
+        const source = new EventSource('http://localhost:3001/api/sse');
         source.addEventListener('message', (event) => {
             if (this.questionsAnswers.length > 0) this.questionsAnswers[this.questionsAnswers.length - 1].content += event.data
         })
@@ -75,7 +75,7 @@ export default {
             const questionsAnswers = JSON.parse(JSON.stringify(this.questionsAnswers))
             this.questionsAnswers.push({ role: 'assistant', content: '' })
             this.currentQuestion = ''
-            const { data } = await axios.post("http://localhost:3000/api/getAnswer", { messages: questionsAnswers })
+            const { data } = await axios.post("http://localhost:3001/api/getAnswer", { messages: questionsAnswers })
             if (data === 'success') {
                 window.sessionStorage.setItem('cahtGpt', JSON.stringify(this.questionsAnswers))
             }
