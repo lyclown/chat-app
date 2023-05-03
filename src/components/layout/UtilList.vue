@@ -29,6 +29,7 @@ export default {
 </script>
 <style lang="scss" scoped>
 .utils-layout{
+    height: max-content;
     box-sizing: border-box;
     padding: 10px;
     background-color: #fff;

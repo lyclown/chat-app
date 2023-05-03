@@ -63,19 +63,19 @@ export default {
         createSse(path) {
             return new Promise((resolve, reject) => {
                 this.source = new SSE(path, {}, ({ event, error, status }) => {
-                if (error) {
-                    console.log(error)
-                    reject(error)
-                }
-                if(status === 'open') {
-                   resolve()
-                }
-                if (status === 'message' && event) {
-                    if (this.questionsAnswers.length > 0) this.questionsAnswers[this.questionsAnswers.length - 1].content += event.data
-                }
-            });
+                    if (error) {
+                        console.log(error)
+                        reject(error)
+                    }
+                    if (status === 'open') {
+                        resolve()
+                    }
+                    if (status === 'message' && event) {
+                        if (this.questionsAnswers.length > 0) this.questionsAnswers[this.questionsAnswers.length - 1].content += event.data
+                    }
+                });
             })
-            
+
         },
         handelMarked(text) {
             return marked.parse(text)
@@ -95,8 +95,8 @@ export default {
             // if (this.source.status === 'close') {
             //     this.source.init()
             // }
-            if(this.source.status !== 'open'){
-                await this.createSse('http://localhost:3001/api/sse')
+            if (this.source.status !== 'open') {
+                await this.createSse('http://localhost:3000/api/sse')
             }
             const currentQuestion = this.currentQuestion
             this.questionsAnswers.push({ role: 'user', content: this.currentQuestion })

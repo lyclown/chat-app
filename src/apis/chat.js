@@ -9,28 +9,28 @@ export const loginTim = (data) => {
 export const getAnswer = (data) => {
   return request({
     method: 'post',
-    url: 'http://localhost:3001/api/getAnswer',
+    url: '/getAnswer',
     data
   })
 }
 export const getImage = (data) => {
   return request({
     method: 'post',
-    url: 'http://localhost:3001/api/getImage',
+    url: '/getImage',
     data
   })
 }
 export const createTranscription = (data) => {
   return request({
     method: 'post',
-    url: 'http://localhost:3001/api/createTranscription',
+    url: '/createTranscription',
     data
   })
 }
 export const uploadFile = (data) => {
   return request({
     method: 'post',
-    url: 'http://localhost:3001/api/upload',
+    url: '/upload',
     data,
     headers: {
       'Content-Type': 'multipart/form-data'
