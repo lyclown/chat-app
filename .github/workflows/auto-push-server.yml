@@ -34,7 +34,7 @@ jobs:
           PASSWORD: ${{ secrets.USER_PASS }}
           REMOTE_PATH: /www/wwwroot/h5
         run: |
-          scp dist.tar.gz ${USERNAME}@${SERVER}:${REMOTE_PATH}
+          scp dist.tar.gz ${{ secrets.USER_NAME }}@${{ secrets.USER_HOST }}:${{env.REMOTE_PATH}}
       - name: Unzip on server
         run: |
-          ssh -o StrictHostKeyChecking=no ${USERNAME}@${SERVER} "tar -xzvf ${REMOTE_PATH}/dist.tar.gz -C ${REMOTE_PATH} && rm ${REMOTE_PATH}/dist.tar.gz"
+          ssh -o StrictHostKeyChecking=no ${{ secrets.USER_NAME }}@${{ secrets.USER_HOST }} "tar -xzvf ${{env.REMOTE_PATH}}/dist.tar.gz -C ${{env.REMOTE_PATH}} && rm ${{env.REMOTE_PATH}}/dist.tar.gz"
