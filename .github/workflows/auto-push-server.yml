@@ -7,10 +7,6 @@ jobs:
   build:
     runs-on: ubuntu-latest
     steps:
-        env:
-          WELCOME: "ssh scp ssh pipelines"
-          LASTSSH: "Doing something after copying"
-          OUTPUTDIR: "dist"
       - name: Checkout
         uses: actions/checkout@v2
       - name: Setup Node.js
