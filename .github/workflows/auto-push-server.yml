@@ -35,4 +35,4 @@ jobs:
           connect_timeout: 10s
           local: './dist.zip'
           remote: /www/wwwroot/h5/chat-app
-        args: 'unzip /www/wwwroot/h5/chat-app/dist.zip -d /www/wwwroot/h5 -O chat-app && rm dist.zip'
+          args: 'unzip /www/wwwroot/h5/chat-app/dist.zip -d /www/wwwroot/h5 -O chat-app && rm dist.zip'
