@@ -28,13 +28,13 @@ jobs:
         run: |
           tar -czvf dist.tar.gz --exclude=.git --exclude=.github dist/
       - name: Upload to server
-          env:
-            SERVER: ${{ secrets.USER_HOST }}
-            USERNAME: ${{ secrets.USER_NAME }}
-            PASSWORD: ${{ secrets.USER_PASS }}
-            REMOTE_PATH: /www/wwwroot/h5
-          run: |
-            scp dist.tar.gz ${USERNAME}@${SERVER}:${REMOTE_PATH}
+        env:
+          SERVER: ${{ secrets.USER_HOST }}
+          USERNAME: ${{ secrets.USER_NAME }}
+          PASSWORD: ${{ secrets.USER_PASS }}
+          REMOTE_PATH: /www/wwwroot/h5
+        run: |
+          scp dist.tar.gz ${USERNAME}@${SERVER}:${REMOTE_PATH}
       - name: Unzip on server
         run: |
           ssh -o StrictHostKeyChecking=no ${USERNAME}@${SERVER} "tar -xzvf ${REMOTE_PATH}/dist.tar.gz -C ${REMOTE_PATH} && rm ${REMOTE_PATH}/dist.tar.gz"
