@@ -37,4 +37,4 @@ jobs:
           connect_timeout: 10s
           local: './dist.zip'
           remote: ${{ env.REMOTE_PATH }}
-          args: 'unzip ${{env.REMOTE_PATH}}/dist.zip -d ${{ env.REMOTE_PATH }} && rm ${{env.REMOTE_PATH}}/dist.zip'
+          args: 'unzip ${{env.REMOTE_PATH}}/dist.zip -d ${{ env.REMOTE_PATH }}'
