@@ -27,14 +27,18 @@ jobs:
       - name: Archive project
         run: |
           tar -czvf dist.tar.gz --exclude=.git --exclude=.github dist/
+      - name: Install sshpass
+        run: |
+          sudo apt-get update
+          sudo apt-get install -y sshpass
       - name: Upload to server
         env:
-          SERVER: ${{ secrets.USER_HOST }}
-          USERNAME: ${{ secrets.USER_NAME }}
-          PASSWORD: ${{ secrets.USER_PASS }}
-          REMOTE_PATH: /www/wwwroot/h5
+          SERVER: ${{ secrets.SERVER }}
+          USERNAME: ${{ secrets.USERNAME }}
+          PASSWORD: ${{ secrets.PASSWORD }}
         run: |
-          scp dist.tar.gz ${{ secrets.USER_NAME }}@${{ secrets.USER_HOST }}:${{env.REMOTE_PATH}}
+          sshpass -p "${{ secrets.USER_PASS }}" scp -o UserKnownHostsFile=/dev/null -o StrictHostKeyChecking=no -o PasswordAuthentication=yes dist.tar.gz ${{ secrets.USER_NAME }}@${{ secrets.USER_HOST }}: /www/wwwroot/h5/
+
       - name: Unzip on server
         run: |
-          ssh -o StrictHostKeyChecking=no ${{ secrets.USER_NAME }}@${{ secrets.USER_HOST }} "tar -xzvf ${{env.REMOTE_PATH}}/dist.tar.gz -C ${{env.REMOTE_PATH}} && rm ${{env.REMOTE_PATH}}/dist.tar.gz"
+          sshpass -p "${{ secrets.USER_PASS }}" ssh -o UserKnownHostsFile=/dev/null -o StrictHostKeyChecking=no -o PasswordAuthentication=yes ${{ secrets.USER_NAME }}@${{ secrets.USER_HOST }} "tar -xzvf /www/wwwroot/h5/dist.tar.gz -C /www/wwwroot/h5/ && rm /www/wwwroot/h5/dist.tar.gz"
