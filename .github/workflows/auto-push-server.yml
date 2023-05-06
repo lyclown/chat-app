@@ -37,7 +37,7 @@ jobs:
           USERNAME: ${{ secrets.USERNAME }}
           PASSWORD: ${{ secrets.PASSWORD }}
         run: |
-          sshpass -p "${{ secrets.USER_PASS }}" scp -o UserKnownHostsFile=/dev/null -o StrictHostKeyChecking=no -o PasswordAuthentication=yes dist.tar.gz ${{ secrets.USER_NAME }}@${{ secrets.USER_HOST }}: /www/wwwroot/h5/
+          sshpass -p "${{ secrets.USER_PASS }}" scp -o UserKnownHostsFile=/dev/null -o StrictHostKeyChecking=no -o PasswordAuthentication=yes dist.tar.gz ${{ secrets.USER_NAME }}@${{ secrets.USER_HOST }}:/www/wwwroot/h5
 
       - name: Unzip on server
         run: |
