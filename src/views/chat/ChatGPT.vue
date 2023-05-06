@@ -96,7 +96,7 @@ export default {
             //     this.source.init()
             // }
             if (this.source.status !== 'open') {
-                await this.createSse('http://localhost:3000/api/sse')
+                await this.createSse('/api/sse')
             }
             const currentQuestion = this.currentQuestion
             this.questionsAnswers.push({ role: 'user', content: this.currentQuestion })
