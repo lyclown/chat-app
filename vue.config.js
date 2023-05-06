@@ -3,7 +3,7 @@ const {
 } = require('@vue/cli-service')
 module.exports = defineConfig({
     transpileDependencies: true,
-    publicPath: "./dist",
+    publicPath: "/dist/",
     outputDir: "dist",
     devServer: {
         host: '0.0.0.0', // 默认是localhost
