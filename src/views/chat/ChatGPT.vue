@@ -95,9 +95,9 @@ export default {
             // if (this.source.status === 'close') {
             //     this.source.init()
             // }
-            if (this.source.status !== 'open') {
-                await this.createSse('/api/sse')
-            }
+            // if (this.source.status !== 'open') {
+            //     await this.createSse('http://localhost:3000/api/sse')
+            // }
             const currentQuestion = this.currentQuestion
             this.questionsAnswers.push({ role: 'user', content: this.currentQuestion })
             const questionsAnswers = JSON.parse(JSON.stringify(this.questionsAnswers))
